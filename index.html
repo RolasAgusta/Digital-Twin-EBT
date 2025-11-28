@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin - Capacitor Bank Monitoring</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- SheetJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Digital Twin - Capacitor Bank Monitoring System</h1>
+            <p><span class="status-indicator"></span>Real-time Power Quality Monitoring | Power Factor Correction System</p>
+        </header>
+        
+        <div class="control-section">
+            <h2>Circuit Breaker & Equipment Control</h2>
+            <div class="control-grid">
+                <div class="control-item">
+                    <div class="control-header">
+                        <h3>CB Incoming (Utama)</h3>
+                    </div>
+                    <div class="status-display" id="statusIncoming">
+                        <span class="status-badge on">ON</span>
+                    </div>
+                    <button class="btn-control btn-on" id="btnIncoming" onclick="toggleBreaker('incoming')">
+                        Turn OFF
+                    </button>
+                    <p class="control-desc">Pemutus Tenaga Utama (Incoming)</p>
+                </div>
+                
+                <div class="control-item">
+                    <div class="control-header">
+                        <h3>CB Outgoing (Feeder)</h3>
+                    </div>
+                    <div class="status-display" id="statusOutgoing">
+                        <span class="status-badge on">ON</span>
+                    </div>
+                    <button class="btn-control btn-on" id="btnOutgoing" onclick="toggleBreaker('outgoing')">
+                        Turn OFF
+                    </button>
+                    <p class="control-desc">Circuit Breaker ke Beban</p>
+                </div>
+                
+                <div class="control-item">
+                    <div class="control-header">
+                        <h3>Capacitor Bank</h3>
+                    </div>
+                    <div class="status-display" id="statusCapacitor">
+                        <span class="status-badge on">ON</span>
+                    </div>
+                    <button class="btn-control btn-on" id="btnCapacitor" onclick="toggleBreaker('capacitor')">
+                        Turn OFF
+                    </button>
+                    <p class="control-desc">Sistem Kompensasi Daya Reaktif</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="graph-section">
+            <h2>Reactive Power Injection (Q<sub>injected</sub>) - Real-time Graph</h2>
+            <div id="chartContainer">
+                <canvas id="reactivePowerChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="table-section">
+            <div class="table-header-with-button">
+                <h2>Latest Monitoring Data</h2>
+                <button class="btn-export" onclick="exportToExcel()">
+                    Export to Excel
+                </button>
+            </div>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>P<sub>load</sub> (kW)</th>
+                            <th>Q<sub>load</sub> (kVAr)</th>
+                            <th>pf<sub>initial</sub></th>
+                            <th>pf<sub>target</sub></th>
+                            <th>Q<sub>target</sub> (kVAr)</th>
+                            <th>Q<sub>injected</sub> (kVAr)</th>
+                            <th>Status CB</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data akan di-generate oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

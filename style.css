@@ -1,0 +1,784 @@
+/* ========================================
+   DIGITAL TWIN - SINGLE VIEWPORT DASHBOARD
+   100vh Architecture with Milky Glass Sidebar
+   ======================================== */
+
+/* ========================================
+   GLOBAL RESET & 100VH LAYOUT
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: row;
+}
+
+/* ========================================
+   MILKY GLASS SIDEBAR
+   ======================================== */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    
+    /* Hide scrollbar but keep functionality */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-header h3 {
+    color: #ffffff;
+    font-size: 1.1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-content {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    
+    /* Hide scrollbar but keep functionality */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    display: none;
+}
+
+.control-group {
+    margin-bottom: 30px;
+}
+
+.control-group h4 {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.toggle-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bus-toggle-item {
+    padding: 8px 0;
+}
+
+.toggle-label {
+    color: #ffffff;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* iOS-style Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.toggle-switch-small {
+    width: 42px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #4a5568;
+    border-radius: 34px;
+    transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch-small .toggle-slider:before {
+    height: 14px;
+    width: 14px;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: #4fd1c5;
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-switch-small input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.toggle-switch input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #4fd1c5;
+}
+
+.bus-toggles {
+    max-height: 400px;
+    overflow-y: auto;
+    
+    /* Hide scrollbar but keep functionality */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.bus-toggles::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================
+   HAMBURGER MENU BUTTON
+   ======================================== */
+.hamburger-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    display: none; /* Hidden on desktop by default */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.hamburger-btn span {
+    width: 20px;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+@media screen and (max-width: 768px) {
+    .hamburger-btn {
+        display: flex; /* Show on mobile */
+    }
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.hamburger-btn span {
+    width: 22px;
+    height: 2px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.hamburger-btn.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-btn.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ========================================
+   BACKDROP OVERLAY
+   ======================================== */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ========================================
+   MAIN CONTENT WRAPPER
+   ======================================== */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ========================================
+   MAIN CONTAINER (Grid: Header + Content)
+   ======================================== */
+.main-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    width: 100%;
+}
+
+/* ========================================
+   HEADER SECTION
+   ======================================== */
+.header-section {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.header-title-group {
+    flex: 1;
+    text-align: center;
+}
+
+.header-section h1 {
+    color: #00bfff;
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.header-section p {
+    color: #b0b0b0;
+    font-size: 0.85em;
+}
+
+/* ========================================
+   CONTENT AREA (Contains 2x2 Grid)
+   ======================================== */
+.content-area {
+    height: 100%;
+    overflow: hidden;
+    padding: 10px;
+}
+
+/* ========================================
+   MONITORING GRID (2x2 Layout - 50:50)
+   CRITICAL: minmax(0, 1fr) prevents table overflow
+   ======================================== */
+.monitoring-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+    height: 100%;
+    width: 100%;
+}
+
+/* ========================================
+   CARD BASE STYLES (Fit to Grid Cell)
+   ======================================== */
+.card {
+    background-color: #242424;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.card h2 {
+    color: #00bfff;
+    font-size: 1em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* Force graph sections to use flexbox for vertical fill */
+.graph-section {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Force table sections to use flexbox for vertical fill */
+.table-section {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* ========================================
+   CARD HEADER (For Table with Export Button)
+   ======================================== */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.card-header h2 {
+    margin: 0;
+}
+
+.btn-export {
+    background: linear-gradient(135deg, #00bfff, #0080cc);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 191, 255, 0.4);
+}
+
+/* ========================================
+   BUS FILTER CONTAINER (Compact Checkboxes)
+   ======================================== */
+.bus-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+    flex-shrink: 0;
+}
+
+.bus-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.bus-checkbox-label:hover {
+    transform: translateY(-1px);
+}
+
+.bus-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #00bfff;
+}
+
+.bus-checkbox-label span {
+    font-size: 0.8em;
+    font-weight: 600;
+    user-select: none;
+}
+
+/* ========================================
+   CHART CONTAINER (Fill Remaining Space)
+   CRITICAL: Flex grow to fill vertical space
+   ======================================== */
+.chart-container,
+#chartContainer {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.chart-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ========================================
+   TABLE CONTAINER (Scroll Inside Cell)
+   CRITICAL: Flex grow to fill vertical space
+   ======================================== */
+.table-wrapper {
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    margin-bottom: 0 !important;
+    overflow: auto !important;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #1e1e1e;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #00bfff;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #0099cc;
+}
+
+/* ========================================
+   TABLE STYLES (Compact & Sticky Header)
+   ======================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75em;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #2a2a2a;
+    z-index: 10;
+}
+
+thead th {
+    background-color: #2a2a2a;
+    color: #00bfff;
+    padding: 8px 6px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid #00bfff;
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 6px 6px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    color: #e0e0e0;
+}
+
+tbody tr:hover {
+    background-color: #2a2a2a;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #1e1e1e;
+}
+
+/* ========================================
+   STATUS BADGES (For CB Status in Table)
+   ======================================== */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.status-badge.on {
+    background-color: #10b981;
+    color: white;
+}
+
+.status-badge.off {
+    background-color: #ef4444;
+    color: white;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINT (Mobile)
+   ======================================== */
+@media (max-width: 1024px) {
+    .monitoring-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+    
+    .header-section h1 {
+        font-size: 1.2em;
+    }
+    
+    .header-section p {
+        font-size: 0.75em;
+    }
+    
+    table {
+        font-size: 0.7em;
+    }
+    
+    .bus-filter-container label {
+        font-size: 0.7em;
+    }
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+@keyframes fadeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.new-row-animate {
+    animation: fadeSlideDown 0.3s ease-out;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mb-1 {
+    margin-bottom: 8px;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE FIX (< 768px)
+   ======================================== */
+@media screen and (max-width: 768px) {
+    /* Sidebar: Hidden by default, slides in as overlay */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    /* Main content stays full width - no squashing */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    
+    /* Hamburger button visible on mobile */
+    .hamburger-btn {
+        display: flex;
+    }
+    
+    /* 1. Enable Scroll on Mobile */
+    html, body {
+        height: auto !important;
+        overflow-y: auto !important;
+        overflow-x: hidden;
+    }
+
+    /* 2. CRITICAL: Unlock Main Container from Grid */
+    .main-container {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100vh;
+        padding-bottom: 50px;
+        overflow: visible !important;
+        grid-template-rows: none !important;
+    }
+
+    /* 3. Content Area - Allow Vertical Expansion */
+    .content-area {
+        height: auto !important;
+        overflow: visible !important;
+        padding: 10px;
+        flex: 1;
+    }
+
+    /* 4. Stack Grid to Single Column */
+    .monitoring-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        gap: 20px;
+        padding-bottom: 40px;
+        grid-template-columns: none !important;
+        grid-template-rows: none !important;
+    }
+
+    /* 5. Fix Card Squashing - Prevent Height Collapse */
+    .card,
+    .graph-section,
+    .table-section {
+        height: auto !important;
+        min-height: 500px !important;
+        margin-bottom: 20px;
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    /* 6. Fix Checkbox Container Overlap - Critical Spacing */
+    .bus-filter-container,
+    #busFilterContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 25px !important;
+        padding: 10px;
+        position: relative;
+        z-index: 10;
+        gap: 10px;
+    }
+
+    .bus-checkbox-label {
+        font-size: 0.75em;
+    }
+
+    /* 7. Chart Container - Fixed Height on Mobile */
+    .chart-container {
+        position: relative;
+        height: 350px !important;
+        min-height: 350px !important;
+        flex: 0 0 350px !important;
+        width: 100% !important;
+    }
+
+    /* 8. Table Wrapper - Max Height on Mobile */
+    .table-wrapper {
+        max-height: 400px !important;
+        overflow: auto !important;
+        flex: 1 !important;
+    }
+
+    /* 9. Mobile Typography Adjustments */
+    .header-section {
+        padding: 12px 15px;
+    }
+
+    .header-section h1 {
+        font-size: 1.2em;
+    }
+
+    .header-section p {
+        font-size: 0.75em;
+    }
+
+    .card h2 {
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    table {
+        font-size: 0.65em;
+    }
+
+    .btn-export {
+        padding: 5px 10px;
+        font-size: 0.75em;
+    }
+}
